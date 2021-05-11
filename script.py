@@ -1,7 +1,8 @@
+import os
 from google.cloud import bigquery
 
 # Set your environment variable for authentication on API call
-export GOOGLE_APPLICATION_CREDENTIALS="KEY_PATH"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/path/to/file.json"
 
 # Construct a BigQuery client object.
 client = bigquery.Client()
