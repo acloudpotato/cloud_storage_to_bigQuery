@@ -1,22 +1,30 @@
 resource "google_compute_instance" "default" {
- name         = "trail-vm"
- machine_type = "f1-micro"
- zone         = "us-central1-a"
+  name         = "test"
+  machine_type = "g1-small"
+  zone         = "us-central1-a"
 
- boot_disk {
-   initialize_params {
-     image = "debian-cloud/debian-9"
-   }
- }
+  tags = ["foo", "bar"]
 
-// Make sure flask is installed on all new instances for later steps
- metadata_startup_script = "sudo apt-get update; sudo apt-get install -yq build-essential python-pip rsync; sudo apt-get install git; git clone https://github.com/abhishek7389/cloud_storage_to_bigQuery; cd cloud_storage_to_bigQuery; python3 script.py"
+  boot_disk {
+    initialize_params {
+      image = "debian-cloud/debian-9"
+    }
+  }
+  network_interface {
+    network = "default"
 
- network_interface {
-   network = "default"
+    access_config {
+      // Ephemeral IP
+    }
+  }
 
-   access_config {
-     // Include this section to give the VM an external ip address
-   }
- }
-}
+  metadata = {
+    foo = "bar"
+  }
+
+  metadata_startup_script = data.template_file.startup.rendered
+  service_account {
+    scopes = ["cloud-platform"]
+  }
+
+} 
